@@ -26,11 +26,11 @@ SECRET_KEY = 'django-insecure-rc^*w^w&6g9_(uvx#6s*bnt!w)l0rdi%!l7mv#y%uc&x%wo5pk
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["https://pet-list-react.vercel.app"]
 
 # FORM SUBMISSION
 # Comment out the following line and place your railway URL, and your production URL in the array.
-CSRF_TRUSTED_ORIGINS = ["https://web-production-1fc72.up.railway.app"]
+CSRF_TRUSTED_ORIGINS = ["https://web-production-1fc72.up.railway.app",'https://pet-list-react.vercel.app']
 
 # Application definition
 
@@ -65,7 +65,10 @@ MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = [
+    'https://pet-list-react.vercel.app',
+    "https://web-production-1fc72.up.railway.app",
+]
 
 
 
