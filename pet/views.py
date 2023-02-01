@@ -46,14 +46,12 @@ def myPetsView(request):
 @parser_classes([parsers.MultiPartParser,parsers.FormParser])
 def addPet(request):
     req_data =ujson.loads(request.data.get("data"))
-    print(req_data["breed"])
     data = {
         "name": req_data["name"],
         "birth_date":req_data["birth_date"],
         "breed":req_data["breed"],
         "images":request.FILES,
     }
-    print(data)
 
     serializer = PetDetailSerializer(data=data,context = {"request":request})
     if serializer.is_valid():

@@ -79,7 +79,6 @@ class CreateProfileSerializer(serializers.ModelSerializer):
         for image in request.FILES:
             images.append(request.FILES[image])
         for image in images:
-            print(image)
             img = ProfileImage(profile=prof,image=image)
             img.save()
         

@@ -4,22 +4,24 @@ from .models import Profile
 from .serializers import ProfileSerializer,CreateProfileSerializer,ProfileListSerializer
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view,parser_classes
 # Create your views here.
 import ujson
+from rest_framework import parsers
 
 
 
 
 @api_view(['POST'])
-def sign_up(request):
-    req_data =ujson.loads(request.data.get("data")) 
+@parser_classes([parsers.MultiPartParser,parsers.FormParser,parsers.JSONParser])
+def sign_up(request,format='json'):
+    req_data =ujson.loads(request.data.get("data"))
     data = {
-        "username": req_data["username"],
-        "email": req_data["email"],
-        "last_name": req_data["last_name"],
-        "first_name": req_data["first_name"],
-        "password": req_data["password"],
+        "username": req_data.get("username"),
+        "email": req_data.get("email"),
+        "last_name": req_data.get("last_name"),
+        "first_name": req_data.get("first_name"),
+        "password": req_data.get("password"),
         "images":[]
     }
 
