@@ -65,10 +65,8 @@ MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    'https://pet-list-react.vercel.app',
-    "https://web-production-1fc72.up.railway.app",
-]
+CORS_ORIGIN_ALLOW_ALL = True
+
 
 
 
