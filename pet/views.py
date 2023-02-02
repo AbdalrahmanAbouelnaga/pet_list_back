@@ -63,7 +63,6 @@ class PetViewSet(ModelViewSet):
         "breed":data["breed"],
         "images":[],
         }
-        print(pet_data)
         serializer = PetDetailSerializer(data=pet_data,context={'request':request})
         if serializer.is_valid():
             serializer.save()

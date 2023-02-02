@@ -44,7 +44,6 @@ class ProfileViewset(ModelViewSet):
     def create(self, request, *args, **kwargs):
         data = request.data
         images = request.FILES
-        print(request.FILES.getlist("images[]"))
         user_data = {
             "username":data.get("username"),
             "email":data.get("email"),

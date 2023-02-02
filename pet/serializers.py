@@ -137,7 +137,6 @@ class PetDetailSerializer(WritableNestedModelSerializer):
     
     
     def create(self,validated_data):
-        print(validated_data)
         breed_name = self.context["request"].data["breed"]
         try:
             breed = Breed.objects.get(name=breed_name)

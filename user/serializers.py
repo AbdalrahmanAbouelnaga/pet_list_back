@@ -54,7 +54,6 @@ class CreateProfileSerializer(serializers.ModelSerializer):
         )
 
     def create(self,validated_data):
-        print(validated_data)
         validated_data.pop("images")
         images = self.context["request"].FILES.getlist("images[]")
         password = validated_data.pop("password")
@@ -63,7 +62,6 @@ class CreateProfileSerializer(serializers.ModelSerializer):
         instance.save()
         for image in images:
             img = ProfileImage(profile=instance,image=image)
-            print(img)
             img.save()
         return instance
         
