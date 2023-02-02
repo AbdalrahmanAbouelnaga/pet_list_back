@@ -9,7 +9,7 @@ from user.models import Profile
 
 class Kind(models.Model):
     id = models.UUIDField(default=uuid4,editable=False,primary_key=True)
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100,unique=True)
     slug = AutoSlugField(populate_from=['name'])
 
     def __str__(self):
@@ -18,7 +18,7 @@ class Kind(models.Model):
 
 class Breed(models.Model):
     id = models.UUIDField(default=uuid4,editable=False,primary_key=True)
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100,unique=True)
     kind = models.ForeignKey(Kind,on_delete=models.CASCADE,related_name='breeds')
     slug = AutoSlugField(populate_from=['name'])
 

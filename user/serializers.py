@@ -31,29 +31,13 @@ class ProfileImageSerializer(serializers.ModelSerializer):
 
 
 class CreateProfileImageSerializer(serializers.ModelSerializer):
-    image = serializers.SerializerMethodField()
-    thumbnail = serializers.SerializerMethodField()
-
-
-    def get_image(self,obj):
-        request = self.context.get('request')
-        if  obj.image.url:
-            return request.build_absolute_uri(f'{obj.image.url}')
-        else:
-            return ''
-        
-    def get_thumbnail(self,obj):
-        request = self.context.get('request')
-        if  obj.thumbnail.url:
-            return request.build_absolute_uri(f'{obj.thumbnail.url}')
-        else:
-            return ''
-
+    image = serializers.ImageField(required=False)
+    profile = serializers.ReadOnlyField(source='profile.id')
     class Meta:
         model = ProfileImage
         fields = (
+            'profile',
             'image',
-            'thumbnail'
         )
 
 class CreateProfileSerializer(serializers.ModelSerializer):
@@ -68,21 +52,21 @@ class CreateProfileSerializer(serializers.ModelSerializer):
             'password',
             'images',
         )
-    def create(self, validated_data):
-        request = self.context["request"]
-        validated_data.pop('images')
-        password = validated_data.pop('password')
-        prof = Profile(**validated_data)
-        prof.set_password(password)
-        prof.save()
-        images = []
-        for image in request.FILES:
-            images.append(request.FILES[image])
+
+    def create(self,validated_data):
+        print(validated_data)
+        validated_data.pop("images")
+        images = self.context["request"].FILES.getlist("images[]")
+        password = validated_data.pop("password")
+        instance = Profile(**validated_data)
+        instance.set_password(password)
+        instance.save()
         for image in images:
-            img = ProfileImage(profile=prof,image=image)
+            img = ProfileImage(profile=instance,image=image)
+            print(img)
             img.save()
+        return instance
         
-        return prof
 
 
 class ProfileSerializer(WritableNestedModelSerializer):
@@ -120,4 +104,18 @@ class ProfileListSerializer(serializers.ModelSerializer):
             'url',
             'username',
             'images',
+        )
+
+
+class myInfoSerializer(serializers.ModelSerializer):
+    url = serializers.SerializerMethodField()
+
+    def get_url(self,obj):
+        return reverse('profile-detail',kwargs={'slug':obj.slug})
+
+    class Meta:
+        model = Profile
+        fields = (
+            'url',
+            'username',
         )

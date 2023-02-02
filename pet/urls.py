@@ -16,6 +16,4 @@ kinds.register(r'kinds',views.KindViewset)
 
 urlpatterns = [
     path('search/',views.search),
-    path('mypets/',views.myPetsView),
-    path('add-pet/',views.addPet),
 ]+router.urls+pets.urls+kinds.urls

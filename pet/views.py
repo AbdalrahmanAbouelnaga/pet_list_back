@@ -41,30 +41,10 @@ def myPetsView(request):
     return Response(serializer.data,status=status.HTTP_200_OK)
 
 
-@api_view(['POST'])
-@permission_classes([permissions.IsAuthenticated,])
-@parser_classes([parsers.MultiPartParser,parsers.FormParser])
-def addPet(request):
-    req_data =ujson.loads(request.data.get("data"))
-    data = {
-        "name": req_data["name"],
-        "birth_date":req_data["birth_date"],
-        "breed":req_data["breed"],
-        "images":request.FILES,
-    }
-
-    serializer = PetDetailSerializer(data=data,context = {"request":request})
-    if serializer.is_valid():
-        serializer.save()
-        return Response({"message":"success"},status=status.HTTP_201_CREATED)
-    return Response(serializer.errors,status=500)
-    
-
-
-
 class PetViewSet(ModelViewSet):
     queryset = Pet.objects.all()
     lookup_field = 'slug'
+    parser_classes = (parsers.MultiPartParser,parsers.FormParser)
     def get_serializer_class(self, *args, **kwargs):
         if self.action =='create' or self.action == 'partial_update':
             return PetDetailSerializer
@@ -74,6 +54,22 @@ class PetViewSet(ModelViewSet):
         if self.action == 'create' or self.action =='partial_update':
             return [permissions.IsAuthenticated(),]
         return super().get_permissions()
+    
+    def create(self, request, *args, **kwargs):
+        data = request.data
+        pet_data = {
+        "name": data["name"],
+        "birth_date":data["birth_date"],
+        "breed":data["breed"],
+        "images":[],
+        }
+        print(pet_data)
+        serializer = PetDetailSerializer(data=pet_data,context={'request':request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(data={"message":"Pet added successfully.Redirecting to Pet list."},status=status.HTTP_201_CREATED)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+    
 
 
 

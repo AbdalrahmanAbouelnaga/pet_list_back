@@ -123,7 +123,7 @@ class PetSerializer(WritableNestedModelSerializer):
 
 class PetDetailSerializer(WritableNestedModelSerializer):
     images = PetImageSerializer(many=True)
-
+    breed = serializers.SlugRelatedField(slug_field='name',read_only=True)
 
     class Meta:
         model = Pet
@@ -136,20 +136,28 @@ class PetDetailSerializer(WritableNestedModelSerializer):
         )
     
     
-    def create(self, validated_data):
-        request = self.context["request"]
-
-        validated_data.pop('images')
-        pet = Pet(owner=request.user,**validated_data)
-        pet.save()
-        images = []
-        print(request.FILES)
-        for image in request.FILES:
-            images.append(request.FILES[image])
-        for im in images:
-            
-            img = PetImage(pet=pet,image=im)
+    def create(self,validated_data):
+        print(validated_data)
+        breed_name = self.context["request"].data["breed"]
+        try:
+            breed = Breed.objects.get(name=breed_name)
+        except Breed.DoesNotExist:
+            kind_name = self.context["request"].data["kind"]
+            try:
+                kind = Kind.objects.get(name=kind_name)
+                breed = Breed(kind=kind,name=breed_name)
+                breed.save()
+            except Kind.DoesNotExist:
+                kind = Kind(name=kind_name)
+                kind.save()
+                breed = Breed(kind=kind,name=breed_name)
+                breed.save()
+        validated_data.pop("images")
+        images = self.context["request"].FILES.getlist("images[]")
+        instance = Pet(owner=self.context["request"].user,breed=breed,**validated_data)
+        instance.save()
+        for image in images:
+            img = PetImage(pet=instance,image=image)
             img.save()
-        print(images)
-        return pet
+        return instance
         

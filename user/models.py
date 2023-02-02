@@ -14,12 +14,14 @@ class Profile(AbstractUser):
 
 
 
+def upload_to(instance, filename):
+    return 'images/{filename}'.format(filename=filename)
 
 class ProfileImage(models.Model):
     id = models.UUIDField(default=uuid4,unique=True,editable=False,primary_key=True)
     profile = models.ForeignKey(Profile,related_name='images',on_delete=models.CASCADE)
-    image = models.ImageField(null=True,blank=True)
-    thumbnail = models.ImageField(null=True,blank=True)
+    image = models.ImageField(upload_to=upload_to,null=True,blank=True)
+    thumbnail = models.ImageField(upload_to=upload_to,null=True,blank=True)
 
 
     def make_thumbnail(self,size=(300,200)):
