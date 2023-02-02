@@ -89,8 +89,8 @@ class PetSerializer(WritableNestedModelSerializer):
         return obj.breed.name
 
     def get_url(self,obj):
-        return reverse('user-pets-detail',kwargs={
-            'owner_slug':obj.owner.slug,
+        return reverse('profile-pets-detail',kwargs={
+            'parent_lookup_owner_slug':obj.owner.slug,
             'slug':obj.slug
         })
 

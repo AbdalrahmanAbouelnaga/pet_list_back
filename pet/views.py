@@ -55,6 +55,12 @@ class PetViewSet(ModelViewSet):
             return [permissions.IsAuthenticated(),]
         return super().get_permissions()
     
+    def list(self, request, parent_lookup_owner_slug):
+        data = self.queryset.filter(owner__slug=parent_lookup_owner_slug)
+        serializer = PetSerializer(data,many=True,context={"request":request})
+        return Response(serializer.data,status=200)
+
+
     def create(self, request, *args, **kwargs):
         data = request.data
         pet_data = {
