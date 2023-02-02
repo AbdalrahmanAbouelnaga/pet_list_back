@@ -53,7 +53,7 @@ class PetImage(models.Model):
         img = Image.open(self.image)
         img.convert('RGB')
         aspect_ratio = img.width /img.height
-        size = (aspect_ratio*200,200)
+        size = (aspect_ratio*400,400)
 
         img.thumbnail(size)
 

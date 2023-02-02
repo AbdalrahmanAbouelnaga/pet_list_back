@@ -24,13 +24,17 @@ class ProfileImage(models.Model):
     thumbnail = models.ImageField(upload_to=upload_to,null=True,blank=True)
 
 
-    def make_thumbnail(self,size=(300,200)):
+    def make_thumbnail(self):
         img = Image.open(self.image)
         img.convert('RGB')
+
+        aspect_ratio = img.width /img.height
+        size=(aspect_ratio*400,400)
+
         img.thumbnail(size)
 
         thumb_io = BytesIO()
-        img.save(thumb_io,'JPEG',quality=90)
+        img.save(thumb_io,'JPEG',quality=100)
 
         thumbnail = File(thumb_io,name=self.image.name)
         self.thumbnail = thumbnail

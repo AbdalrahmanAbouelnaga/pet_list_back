@@ -8,7 +8,7 @@ from rest_framework_nested.routers import DefaultRouter,NestedDefaultRouter
 router = DefaultRouter()
 router.register(r'users',ProfileViewset)
 
-pets = NestedDefaultRouter(router,r'users',lookup='owner')
+pets = NestedDefaultRouter(router,r'users',lookup='owner__slug')
 pets.register(r'pets',views.PetViewSet,basename='user-pets')
 
 kinds = DefaultRouter()
